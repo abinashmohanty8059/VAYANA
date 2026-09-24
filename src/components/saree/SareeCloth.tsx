@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { ScrollTrigger } from "@/lib/gsap";
+import { ScrollTrigger, LITE_QUERY } from "@/lib/gsap";
 import { paintSaree, SAREE_DESIGNS, type SareeDesign } from "./sareeTexture";
 
 // Cloth dimensions (world units) and simulation grid.
@@ -38,6 +38,9 @@ export default function SareeCloth({
     const host = hostRef.current!;
     const canvas = canvasRef.current!;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Phones/touch get a single settled frame instead of a running simulation.
+    const lite = window.matchMedia(LITE_QUERY).matches;
+    const still = reduce || lite;
     let disposed = false;
     let cleanup = () => {};
 
@@ -46,7 +49,7 @@ export default function SareeCloth({
 
       // ── Renderer & scene ────────────────────────────────
       const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, lite ? 1.5 : 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       // No filmic curve: ACES pushes the maroon toward salmon.
       renderer.toneMapping = THREE.NoToneMapping;
@@ -295,7 +298,7 @@ export default function SareeCloth({
         raf = requestAnimationFrame(loop);
       };
       const start = () => {
-        if (running || reduce || contextLost || !visible || document.hidden) return;
+        if (running || still || contextLost || !visible || document.hidden) return;
         running = true;
         last = 0;
         raf = requestAnimationFrame(loop);
@@ -307,7 +310,7 @@ export default function SareeCloth({
 
       fit();
       // Settle into a flying pose before the first frame.
-      for (let s = 0; s < (reduce ? 260 : 90); s++) step((t += DT));
+      for (let s = 0; s < (still ? 260 : 90); s++) step((t += DT));
       commit();
       render();
 
@@ -338,7 +341,7 @@ export default function SareeCloth({
           pointer.strength = Math.min(1, pointer.strength + 0.35);
         }
       };
-      host.addEventListener("pointermove", onPointer);
+      if (!still) host.addEventListener("pointermove", onPointer);
 
       const onLost = (e: Event) => {
         e.preventDefault();

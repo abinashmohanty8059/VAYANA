@@ -226,6 +226,13 @@ html.has-cursor textarea {
   animation: var(--animate-grain);
 }
 
+/* Full-screen animated grain repaints every frame — skip it on phones and touch devices. */
+@media (max-width: 767px), (pointer: coarse) {
+  .grain {
+    display: none;
+  }
+}
+
 /* ─── Marquee ───────────────────────────────────────── */
 .marquee-track {
   display: flex;

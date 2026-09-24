@@ -15,6 +15,12 @@ if (typeof window !== "undefined") {
   gsap.defaults({ ease: "luxe", duration: 1.2 });
 }
 
+/**
+ * Phones, small screens and touch devices: heavy continuous or scroll-scrubbed
+ * effects are switched off or frozen here to keep scrolling smooth.
+ */
+export const LITE_QUERY = "(max-width: 767px), (pointer: coarse)";
+
 /** Fired on window once the preloader curtain has lifted. */
 export const LOADED_EVENT = "vayana:loaded";
 

@@ -21,6 +21,8 @@ export default function FinalCTA() {
   }
 
   function onMove(e: React.PointerEvent<HTMLElement>) {
+    // Moving a 50vw blurred glow is costly; only follow a real mouse.
+    if (e.pointerType !== "mouse") return;
     const r = e.currentTarget.getBoundingClientRect();
     gsap.to(glowRef.current, { x: e.clientX - r.left, y: e.clientY - r.top, duration: 1.4, ease: "power3" });
   }

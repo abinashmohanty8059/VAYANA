@@ -88,7 +88,7 @@ export default function MotifsSection() {
     <section id="motifs" className="relative bg-ivory py-28 md:py-40 overflow-hidden" aria-label="Cultural motifs">
       <div className="absolute left-1/2 top-[18%] -translate-x-1/2 w-[130vw] md:w-[80vw] max-w-[1200px] aspect-square text-gold/20 pointer-events-none">
         <div className="w-full h-full" data-spin="120">
-          <Mandala className="w-full h-full animate-spin-slower" />
+          <Mandala className="w-full h-full md:animate-spin-slower" />
         </div>
       </div>
 

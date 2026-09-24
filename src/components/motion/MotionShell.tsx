@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, ScrollSmoother, SplitText, useGSAP, LOADED_EVENT } from "@/lib/gsap";
+import { gsap, ScrollTrigger, ScrollSmoother, SplitText, useGSAP, LOADED_EVENT, LITE_QUERY } from "@/lib/gsap";
 
 /**
  * Created first (before any section's ScrollTriggers) so every trigger on the
@@ -46,6 +46,7 @@ const CLIP_FROM: Record<string, string> = {
  *   data-split="lines|words|chars" → masked SplitText reveal
  *   data-scrub                   → words brighten as you scroll through
  *   data-clip="up|left|center…"  → clip-path wipe, inner <img> de-zooms (data-start overrides trigger)
+ *   (parallax, float, spin and skew are skipped on phones/touch — see LITE_QUERY)
  *   data-parallax="0.1"          → yPercent drift relative to its frame
  *   data-float="120"             → px drift over the viewport pass
  *   data-spin="180"              → rotation scrubbed with scroll
@@ -66,7 +67,10 @@ export default function MotionShell({
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
+      mm.add({ motion: "(prefers-reduced-motion: no-preference)", lite: LITE_QUERY }, (ctx) => {
+        if (!ctx.conditions!.motion) return;
+        // Scroll-scrubbed transforms (parallax, drift, spin, skew) are desktop-only.
+        const lite = ctx.conditions!.lite;
         const q = <T extends Element = HTMLElement>(sel: string) => gsap.utils.toArray<T>(sel, ref.current);
 
         q("[data-reveal]").forEach((el) => {
@@ -139,7 +143,7 @@ export default function MotionShell({
           if (img) tl.from(img, { scale: 1.4, duration: 2.4, ease: "expo.out", clearProps: "transform" }, "<0.1");
         });
 
-        q("[data-parallax]").forEach((el) => {
+        if (!lite) q("[data-parallax]").forEach((el) => {
           const s = parseFloat(el.dataset.parallax || "0.1");
           gsap.fromTo(
             el,
@@ -152,7 +156,7 @@ export default function MotionShell({
           );
         });
 
-        q("[data-float]").forEach((el) => {
+        if (!lite) q("[data-float]").forEach((el) => {
           const d = parseFloat(el.dataset.float || "100");
           gsap.fromTo(
             el,
@@ -161,7 +165,7 @@ export default function MotionShell({
           );
         });
 
-        q("[data-spin]").forEach((el) => {
+        if (!lite) q("[data-spin]").forEach((el) => {
           gsap.to(el, {
             rotation: parseFloat(el.dataset.spin || "180"),
             ease: "none",
@@ -200,7 +204,7 @@ export default function MotionShell({
           });
         });
 
-        const skewTargets = q("[data-skew]");
+        const skewTargets = lite ? [] : q("[data-skew]");
         if (skewTargets.length) {
           const proxy = { skew: 0 };
           const set = gsap.quickSetter(skewTargets, "skewY", "deg");

@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { gsap, SplitText, useGSAP, onSiteLoaded } from "@/lib/gsap";
+import { gsap, SplitText, useGSAP, onSiteLoaded, LITE_QUERY } from "@/lib/gsap";
 import { Arrow, LotusMark, RotatingSeal } from "@/components/ui/Ornaments";
 
 const HERO_IMG =
@@ -40,8 +40,9 @@ export default function Hero() {
       );
       const off = onSiteLoaded(intro);
 
-      // Scroll-out: headline lifts, photograph pushes in, everything dims.
-      gsap
+      // Scroll-out: headline lifts, photograph pushes in, everything dims. Desktop only —
+      // scrubbing a full-screen photo's scale is too heavy for phones.
+      if (!window.matchMedia(LITE_QUERY).matches) gsap
         .timeline({
           scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
           defaults: { ease: "none" },
