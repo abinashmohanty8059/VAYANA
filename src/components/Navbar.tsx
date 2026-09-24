@@ -1,174 +1,195 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { gsap, ScrollTrigger, ScrollSmoother, useGSAP, onSiteLoaded } from "@/lib/gsap";
+import { LotusMark, RollText } from "@/components/ui/Ornaments";
 
 const NAV_LINKS = [
   { href: "#roots", label: "Heritage" },
-  { href: "#collection", label: "The Collection" },
-  { href: "#craft", label: "Weaving Craft" },
-  { href: "#motifs", label: "Signature Motifs" },
+  { href: "#collection", label: "Collection" },
+  { href: "#craft", label: "The Craft" },
+  { href: "#motifs", label: "Motifs" },
   { href: "#story", label: "Our Story" },
-  { href: "#pillars", label: "Pillars" },
 ];
 
+export const CART_EVENT = "vayana:cart";
+
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const cartRef = useRef<HTMLSpanElement>(null);
+  const menuTl = useRef<gsap.core.Timeline | null>(null);
+  const [solid, setSolid] = useState(false);
+  const [open, setOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  const navRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    const header = headerRef.current!;
+    gsap.set(header, { yPercent: -100 });
+    const cleanup = onSiteLoaded(() => gsap.to(header, { yPercent: 0, duration: 1.4, delay: 0.5 }));
+
+    const show = gsap.quickTo(header, "yPercent", { duration: 0.7, ease: "power3" });
+    let hidden = false;
+
+    ScrollTrigger.create({
+      start: 0,
+      end: "max",
+      onUpdate: (self) => {
+        const y = self.scroll();
+        setSolid(y > window.innerHeight * 0.75);
+        if (progressRef.current) progressRef.current.style.transform = `scaleX(${self.progress})`;
+        const shouldHide = self.direction === 1 && y > 600;
+        if (shouldHide !== hidden) {
+          hidden = shouldHide;
+          show(hidden ? -100 : 0);
+        }
+      },
+    });
+
+    // Full-screen menu: circular reveal from the toggle, then staggered links.
+    menuTl.current = gsap
+      .timeline({ paused: true })
+      .set(menuRef.current, { display: "flex" })
+      .fromTo(
+        menuRef.current,
+        { clipPath: "circle(0% at calc(100% - 44px) 44px)" },
+        { clipPath: "circle(150% at calc(100% - 44px) 44px)", duration: 1.1, ease: "expo.inOut" }
+      )
+      .from(".menu-link", { yPercent: 120, duration: 1, stagger: 0.07 }, "-=0.5")
+      .from(".menu-meta", { autoAlpha: 0, y: 20, duration: 0.8, stagger: 0.08 }, "-=0.7");
+
+    return cleanup;
+  });
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const tl = menuTl.current;
+    if (!tl) return;
+    ScrollSmoother.get()?.paused(open);
+    if (open) gsap.to(headerRef.current, { yPercent: 0, duration: 0.5, overwrite: "auto" });
+    if (open) tl.timeScale(1).play();
+    else tl.timeScale(1.6).reverse();
+  }, [open]);
+
+  useEffect(() => {
+    const onCart = () => {
+      setCartCount((c) => c + 1);
+      gsap.fromTo(cartRef.current, { scale: 1.8 }, { scale: 1, duration: 0.9, ease: "elastic.out(1, 0.4)" });
+    };
+    window.addEventListener(CART_EVENT, onCart);
+    return () => window.removeEventListener(CART_EVENT, onCart);
   }, []);
 
-  // Expose cart updater globally for product cards
-  useEffect(() => {
-    (window as any).__vayanaAddToCart = () => setCartCount((c) => c + 1);
-  }, []);
+  const tone = solid || open ? "text-ink" : "text-ivory";
 
   return (
     <>
-      {/* Announcement Bar */}
-      <div className="bg-vayana-charcoal text-vayana-cream text-[10px] md:text-xs tracking-mega-luxury uppercase py-2.5 px-4 text-center border-b border-vayana-gold/30 relative z-50">
-        <div className="container mx-auto flex items-center justify-center gap-3">
-          <span className="text-vayana-gold text-xs">◆</span>
-          <span>Complimentary Worldwide White-Glove Shipping on Handcrafted Masterpieces</span>
-          <span className="hidden md:inline text-vayana-gold text-xs">◆</span>
-          <span className="hidden md:inline">Handwoven with Sacred Reverence in Odisha</span>
-          <span className="text-vayana-gold text-xs">◆</span>
-        </div>
-      </div>
-
-      {/* Sticky Navigation */}
-      <header
-        ref={navRef}
-        className={`luxury-blur-nav sticky top-0 z-40 bg-vayana-cream/90 backdrop-blur-md transition-all duration-300 ${
-          scrolled ? "scrolled" : ""
-        }`}
-        id="main-navigation"
-      >
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-3 flex items-center justify-between">
-          {/* Brand Logo */}
-          <a href="#" className="flex items-center gap-3 group" aria-label="Vayana Textiles Home">
-            <Image
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC--zncsbC296igk6MvBxgIay6eIbqTZv8-dLxT4u-bh3L-WcwkUz6AAP8wOmlwUAXUQiAn_SWVrMHZY6PveSmI06QUogiwCl7HO7ALne5ARS9lmgxce-Obo58UctvG97YyIDNojjxg4fMD6tx0GK_1D82MZr5L6GRbydNlbTtQRLGTsUXcIThney_w8ISy9YrtrWicezNLI01lOjvqZ418OIAQ3v-dnE1JN6NIHQZFvGcZfXRXpH_NH1F2VBFD36WKYw"
-              alt="Vayana Logo - Wear Your Heritage"
-              width={56}
-              height={56}
-              className="h-12 md:h-14 w-auto object-contain transition-transform duration-500 group-hover:scale-105"
-              priority
-            />
-            <div className="flex flex-col">
-              <span className="font-luxury-display text-lg md:text-xl tracking-widest text-vayana-charcoal font-bold group-hover:text-vayana-maroon transition-colors">
-                VAYANA
-              </span>
-              <span className="text-[8px] uppercase tracking-mega-luxury text-vayana-maroon font-medium">
-                Wear Your Heritage
-              </span>
-            </div>
+      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50" id="main-navigation">
+        <div
+          className={`absolute inset-0 transition-all duration-700 ease-luxe ${
+            solid && !open ? "bg-ivory/80 backdrop-blur-xl border-b border-ink/10" : "bg-transparent"
+          }`}
+        />
+        <div className={`relative max-w-[1600px] mx-auto px-5 md:px-10 h-20 flex items-center justify-between transition-colors duration-700 ${open ? "text-ivory" : tone}`}>
+          {/* Wordmark */}
+          <a href="#" className="group flex items-center gap-3" aria-label="Vayana Textiles home" data-magnetic="0.2">
+            <LotusMark className="w-8 h-8 sm:w-9 sm:h-9 text-gold transition-transform duration-1000 ease-luxe group-hover:rotate-[360deg]" />
+            <span className="flex flex-col leading-none">
+              <span className="font-display text-2xl tracking-[0.18em]">VAYANA</span>
+              <span className="eyebrow text-[8px] tracking-[0.3em] sm:tracking-[0.5em] text-gold mt-1">Textiles · Odisha</span>
+            </span>
           </a>
 
-          {/* Desktop Navigation */}
-          <nav
-            className="hidden lg:flex items-center space-x-8 text-[11px] font-medium tracking-heritage text-vayana-charcoal/80 uppercase"
-            aria-label="Main navigation"
-          >
+          {/* Desktop links */}
+          <nav className="hidden lg:flex items-center gap-10" aria-label="Main navigation">
             {NAV_LINKS.map(({ href, label }) => (
-              <a
-                key={href}
-                href={href}
-                className="hover:text-vayana-maroon hover:border-b hover:border-vayana-gold py-1 transition-all"
-              >
-                {label}
+              <a key={href} href={href} className="group eyebrow text-[10.5px] tracking-[0.26em]">
+                <RollText>{label}</RollText>
               </a>
             ))}
           </nav>
 
-          {/* Right Utility Actions */}
-          <div className="flex items-center space-x-5 text-vayana-charcoal text-xs tracking-wider">
-            <button
-              className="hidden sm:inline-block text-[11px] uppercase tracking-widest font-medium text-vayana-charcoal/70 hover:text-vayana-maroon transition-colors"
-              type="button"
-              aria-label="Currency selector"
-            >
-              INR (₹) / USD ($)
-            </button>
-
-            <button
-              aria-label="Search Collection"
-              className="p-1.5 text-vayana-charcoal hover:text-vayana-maroon transition-colors"
-              type="button"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                <path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Utilities */}
+          <div className="flex items-center gap-2 md:gap-4">
+            <button type="button" aria-label="Search collection" className="hidden sm:block p-2.5 rounded-full hover:text-gold transition-colors" data-magnetic="0.4">
+              <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3.5-3.5" strokeLinecap="round" />
               </svg>
             </button>
-
             <button
-              aria-label="Saved Pieces"
-              className="hidden sm:inline-block p-1.5 text-vayana-charcoal hover:text-vayana-maroon transition-colors"
               type="button"
+              aria-label={`Shopping bag, ${cartCount} items`}
+              className="relative p-2.5 rounded-full hover:text-gold transition-colors"
+              data-magnetic="0.4"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" strokeLinecap="round" strokeLinejoin="round" />
+              <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                <path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8z" />
+                <path d="M9 8V6a3 3 0 0 1 6 0v2" />
               </svg>
-            </button>
-
-            <button
-              aria-label="View Shopping Bag"
-              className="flex items-center gap-1.5 p-1.5 text-vayana-charcoal hover:text-vayana-maroon transition-colors font-medium"
-              type="button"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                <path d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <span className="text-[11px] tracking-normal font-sans font-semibold text-vayana-maroon">
-                ({cartCount})
+              <span
+                ref={cartRef}
+                className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-maroon text-ivory text-[9px] font-semibold flex items-center justify-center"
+              >
+                {cartCount}
               </span>
             </button>
 
-            {/* Mobile Hamburger */}
             <button
-              aria-label="Toggle navigation"
-              aria-expanded={mobileOpen}
-              className="lg:hidden p-1.5 text-vayana-charcoal hover:text-vayana-maroon"
-              onClick={() => setMobileOpen((o) => !o)}
               type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((o) => !o)}
+              className="group ml-1 flex items-center gap-3 pl-4 pr-1.5 py-1.5 rounded-full border border-current/25 hover:border-gold transition-colors"
+              data-magnetic="0.3"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                {mobileOpen ? (
-                  <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
-                ) : (
-                  <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" strokeLinecap="round" strokeLinejoin="round" />
-                )}
-              </svg>
+              <span className="eyebrow text-[10px] hidden sm:block">{open ? "Close" : "Menu"}</span>
+              <span className="relative w-9 h-9 rounded-full bg-gold text-ink flex items-center justify-center">
+                <span className={`absolute h-px w-4 bg-current transition-transform duration-500 ease-luxe ${open ? "rotate-45" : "-translate-y-[3px]"}`} />
+                <span className={`absolute h-px w-4 bg-current transition-transform duration-500 ease-luxe ${open ? "-rotate-45" : "translate-y-[3px]"}`} />
+              </span>
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu Drawer */}
-        {mobileOpen && (
-          <div className="lg:hidden bg-vayana-cream border-b border-vayana-gold/30 px-6 py-6">
-            <nav className="flex flex-col space-y-4 text-xs uppercase tracking-widest text-vayana-charcoal" aria-label="Mobile navigation">
-              {NAV_LINKS.map(({ href, label }, i) => (
-                <a
-                  key={href}
-                  href={href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`hover:text-vayana-maroon py-1 transition-colors ${
-                    i < NAV_LINKS.length - 1 ? "border-b border-vayana-borderMuted" : ""
-                  }`}
-                >
-                  {label}
-                </a>
-              ))}
-            </nav>
-          </div>
-        )}
+        {/* Scroll progress */}
+        <div ref={progressRef} className="absolute left-0 bottom-0 h-px w-full bg-gold origin-left scale-x-0" />
       </header>
+
+      {/* Full-screen menu */}
+      <div
+        ref={menuRef}
+        className="fixed inset-0 z-40 hidden flex-col justify-between bg-ink text-ivory pt-32 pb-10 px-5 md:px-10"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site menu"
+      >
+        <div className="ikat-weave absolute inset-0 text-gold/[0.035] pointer-events-none" />
+        <nav className="relative flex flex-col" aria-label="Mobile navigation">
+          {NAV_LINKS.map(({ href, label }, i) => (
+            <a
+              key={href}
+              href={href}
+              onClick={() => setOpen(false)}
+              className="group flex items-baseline gap-5 md:gap-8 border-b border-ivory/10 py-3 md:py-4 overflow-hidden"
+            >
+              <span className="menu-link font-display italic text-gold text-lg md:text-2xl w-8">0{i + 1}</span>
+              <span className="font-display text-5xl md:text-8xl leading-none transition-[translate,color] duration-700 ease-luxe group-hover:translate-x-4 group-hover:text-gold group-hover:italic">
+                <span className="menu-link inline-block">{label}</span>
+              </span>
+            </a>
+          ))}
+        </nav>
+        <div className="relative flex flex-col md:flex-row md:items-end justify-between gap-6 text-sand/70">
+          <div className="menu-meta">
+            <p className="eyebrow text-gold mb-2">Private Salon</p>
+            <a href="mailto:concierge@vayanatextiles.com" className="link-slide font-display text-xl text-ivory">
+              concierge@vayanatextiles.com
+            </a>
+          </div>
+          <p className="menu-meta eyebrow text-[10px]">Bhubaneswar · Sambalpur · Worldwide</p>
+        </div>
+      </div>
     </>
   );
 }

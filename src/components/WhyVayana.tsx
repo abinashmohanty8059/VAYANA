@@ -1,110 +1,94 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { Arrow, RotatingSeal, SectionLabel } from "@/components/ui/Ornaments";
 
 const PILLARS = [
   {
-    icon: (
-      <svg className="w-10 h-10 text-vayana-maroon" fill="none" stroke="currentColor" strokeWidth="1.4" viewBox="0 0 24 24">
-        <rect height="18" rx="2" width="18" x="3" y="3" />
-        <path d="M7 3v18" />
-        <path d="M12 3v18" />
-        <path d="M17 3v18" />
-        <path d="M3 12h18" />
-      </svg>
-    ),
-    title: "HANDWOVEN WITH LOVE",
-    body: "Zero automated power-looms. Every millimeter passes through rhythmic pedal movements and artisan fingers.",
+    title: "Handwoven with love",
+    body: "Zero power-looms. Every millimetre passes through rhythmic pedal movements and an artisan's fingers.",
+    tag: "100% handloom",
   },
   {
-    icon: (
-      <svg className="w-10 h-10 text-vayana-maroon" fill="none" stroke="currentColor" strokeWidth="1.4" viewBox="0 0 24 24">
-        <path d="M12 2L9 8h6l-3-6z" />
-        <path d="M12 8v14" />
-        <path d="M12 14l-5-3" />
-        <path d="M12 18l5-3" />
-      </svg>
-    ),
-    title: "SUSTAINABLE FASHION",
-    body: "Non-toxic natural vegetable vats, biodegradable pure tussar silks, and zero waste textile philosophy.",
+    title: "Sustainable by nature",
+    body: "Non-toxic vegetable dye vats, biodegradable wild tussar silks and a zero-waste textile philosophy.",
+    tag: "Botanical dyes",
   },
   {
-    icon: (
-      <svg className="w-10 h-10 text-vayana-maroon" fill="none" stroke="currentColor" strokeWidth="1.4" viewBox="0 0 24 24">
-        <rect height="10" transform="rotate(45 12 12)" width="10" x="7" y="7" />
-        <circle cx="12" cy="12" r="2" />
-      </svg>
-    ),
-    title: "ROOTED IN HERITAGE",
-    body: "Direct weaver patronages guaranteeing dignified living wages and generational trade longevity.",
+    title: "Rooted in heritage",
+    body: "Direct weaver patronage guaranteeing dignified living wages and a craft that outlives generations.",
+    tag: "Fair patronage",
   },
   {
-    icon: (
-      <svg className="w-10 h-10 text-vayana-maroon" fill="none" stroke="currentColor" strokeWidth="1.4" viewBox="0 0 24 24">
-        <circle cx="12" cy="8" r="5" />
-        <path d="M8 14l-3 7 7-3 7 3-3-7" />
-      </svg>
-    ),
-    title: "MADE FOR YOU",
-    body: "Custom pallu inscriptions, bridal consultations, and numbered registry paperwork in every bespoke box.",
+    title: "Made for you",
+    body: "Custom pallu inscriptions, bridal consultations and numbered registry papers in every bespoke box.",
+    tag: "Bespoke atelier",
   },
 ];
 
 export default function WhyVayana() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const root = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".reveal-on-scroll").forEach((el, i) => {
-              setTimeout(() => el.classList.add("visible"), i * 150);
-            });
-          }
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 1024px)", () => {
+        ScrollTrigger.create({
+          trigger: ".pillars-list",
+          start: "top 140px",
+          end: () => `bottom ${140 + root.current!.querySelector<HTMLElement>(".pillars-head")!.offsetHeight}px`,
+          pin: ".pillars-head",
+          pinSpacing: false,
+          invalidateOnRefresh: true,
         });
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+      });
+    },
+    { scope: root }
+  );
 
   return (
-    <section
-      ref={sectionRef}
-      id="pillars"
-      className="py-20 bg-vayana-parchment border-y border-vayana-gold/30"
-      aria-label="Brand pillars"
-    >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
-          <span className="text-[11px] uppercase tracking-mega-luxury text-vayana-maroon font-semibold">
-            THE VAYANA COMMITMENT
-          </span>
-          <h2 className="font-editorial-serif text-3xl sm:text-4xl text-vayana-charcoal uppercase font-normal mt-1">
-            Sacred Trust &amp; Craft Integrity
-          </h2>
+    <section ref={root} id="pillars" className="relative bg-wine text-ivory py-28 md:py-40 overflow-hidden" aria-label="Brand pillars">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(200,162,94,0.18),transparent_60%)]" aria-hidden="true" />
+      <div className="ikat-weave absolute inset-0 text-ink/20 pointer-events-none" aria-hidden="true" />
+
+      <div className="relative max-w-[1600px] mx-auto px-5 md:px-10 grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <div className="lg:col-span-5">
+          <div className="pillars-head">
+            <SectionLabel index="05" className="text-gold">
+              The Vayana Commitment
+            </SectionLabel>
+            <h2 className="mt-8 font-display text-[12vw] md:text-[6vw] lg:text-[4.8vw] leading-[0.95] tracking-[-0.03em]" data-split="lines">
+              Sacred trust &amp; <em className="text-gold-light">craft integrity.</em>
+            </h2>
+            <div className="mt-12 hidden lg:block" data-reveal="scale">
+              <RotatingSeal text="GI TAGGED · CERTIFIED HANDLOOM · ODISHA · " className="w-36 h-36" ringClass="text-gold-light">
+                <span className="font-display text-2xl text-gold">GI</span>
+              </RotatingSeal>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {PILLARS.map((pillar) => (
-            <div
-              key={pillar.title}
-              className="flex flex-col items-center text-center p-4 reveal-on-scroll"
-            >
-              <div className="w-20 h-20 rounded-full border-2 border-vayana-maroon flex items-center justify-center bg-vayana-cream mb-4 shadow-sm">
-                {pillar.icon}
+        <ol className="pillars-list lg:col-span-7 border-t border-ivory/15">
+          {PILLARS.map((p, i) => (
+            <li key={p.title} className="group relative border-b border-ivory/15 overflow-hidden" data-reveal="up">
+              <div className="absolute inset-0 bg-gold -translate-x-full group-hover:translate-x-0 transition-transform duration-[900ms] ease-luxe" />
+              <div className="relative py-10 md:py-14 px-2 md:px-6 grid grid-cols-[auto_1fr_auto] gap-6 md:gap-10 items-start transition-colors duration-700 group-hover:text-ink">
+                <span className="font-display italic text-xl text-gold group-hover:text-maroon transition-colors duration-700">0{i + 1}</span>
+                <div>
+                  <h3 className="font-display text-3xl md:text-5xl leading-tight transition-transform duration-700 ease-luxe group-hover:translate-x-3">
+                    {p.title}
+                  </h3>
+                  <p className="mt-4 max-w-lg text-[15px] leading-[1.8] text-sand/70 group-hover:text-ink/75 transition-colors duration-700">
+                    {p.body}
+                  </p>
+                  <span className="mt-6 inline-block eyebrow text-[9px] px-3 py-1.5 rounded-full border border-current/30">{p.tag}</span>
+                </div>
+                <Arrow className="w-6 h-6 mt-3 -rotate-45 opacity-40 transition-all duration-700 ease-luxe group-hover:rotate-0 group-hover:opacity-100" />
               </div>
-              <h3 className="font-luxury-display text-xs tracking-widest uppercase text-vayana-charcoal font-semibold">
-                {pillar.title}
-              </h3>
-              <p className="text-xs text-vayana-charcoal/70 font-sans mt-2 leading-relaxed">{pillar.body}</p>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );

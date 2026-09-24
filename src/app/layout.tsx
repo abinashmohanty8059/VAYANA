@@ -1,26 +1,27 @@
-import type { Metadata } from "next";
-import { Cormorant_Garamond, Cinzel, Montserrat } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Bodoni_Moda, Manrope, Pinyon_Script } from "next/font/google";
+import Preloader from "@/components/motion/Preloader";
+import Cursor from "@/components/motion/Cursor";
 import "./globals.css";
 
-const cormorant = Cormorant_Garamond({
+const bodoni = Bodoni_Moda({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
-  variable: "--font-cormorant",
+  axes: ["opsz"],
+  variable: "--font-bodoni",
   display: "swap",
 });
 
-const cinzel = Cinzel({
+const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-cinzel",
+  variable: "--font-manrope",
   display: "swap",
 });
 
-const montserrat = Montserrat({
+const pinyon = Pinyon_Script({
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600"],
-  variable: "--font-montserrat",
+  weight: "400",
+  variable: "--font-pinyon",
   display: "swap",
 });
 
@@ -36,14 +37,25 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0f0d0c",
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${cinzel.variable} ${montserrat.variable} scroll-smooth`}>
-      <body className="bg-vayana-cream text-vayana-charcoal antialiased font-sans overflow-x-hidden selection:bg-vayana-maroon selection:text-vayana-cream">
+    <html
+      lang="en"
+      className={`${bodoni.variable} ${manrope.variable} ${pinyon.variable} is-loading`}
+      suppressHydrationWarning
+    >
+      <body className="bg-ivory text-ink font-sans antialiased overflow-x-hidden">
+        <Preloader />
+        <Cursor />
+        <div className="grain" aria-hidden="true" />
         {children}
       </body>
     </html>

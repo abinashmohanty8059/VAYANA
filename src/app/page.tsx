@@ -10,26 +10,28 @@ import StorySection from "@/components/StorySection";
 import Testimonials from "@/components/Testimonials";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
-import { IkatBorderStrip, IkatSubtleStrip } from "@/components/ui/Dividers";
+import MotionShell from "@/components/motion/MotionShell";
+import { CredentialsMarquee, IkatBand, WeaveMarquee } from "@/components/ui/Dividers";
 
 export default function Home() {
   return (
-    <main>
-      <Navbar />
-      <Hero />
-      <IkatBorderStrip />
-      <HeritageSection />
-      <IkatSubtleStrip />
-      <CollectionSection />
-      <WeavingSection />
-      <MotifsSection />
-      <WhyVayana />
-      <EditorialBanner />
-      <StorySection />
-      <Testimonials />
-      <FinalCTA />
-      <IkatBorderStrip />
+    <MotionShell chrome={<Navbar />}>
+      <main>
+        <Hero />
+        <CredentialsMarquee />
+        <HeritageSection />
+        <WeaveMarquee />
+        <CollectionSection />
+        <WeavingSection />
+        <MotifsSection />
+        <WhyVayana />
+        <EditorialBanner />
+        <StorySection />
+        <Testimonials />
+        <FinalCTA />
+        <IkatBand />
+      </main>
       <Footer />
-    </main>
+    </MotionShell>
   );
 }

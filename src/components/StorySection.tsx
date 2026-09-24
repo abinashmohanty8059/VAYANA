@@ -1,104 +1,73 @@
-"use client";
-
-import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { RotatingSeal, SectionLabel } from "@/components/ui/Ornaments";
+
+const WEAVER_IMG =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDnDcyT2vnU4s7Zmh3lMAggVZXZ1LJNEv5KWHicnn9gl_H8nBcl2r3jqr51Sq6QubC1-Ppg7vO8hU-BnLoQd0RthpMD0OFyPFYDYMoHdTLKPhnMAEPXXN7DuryuVzY4PEkDN4kS0SE0u3UJM5imuCjgw1ASNxFfE0fk7oz80PjA40qgl0OqyrsmugA-8rxiegZkKWA11wB1mxRAq5AjJ-MlFcdescI8ky8SHYjW-kSZ4dtC1CrZ9YaN";
+const DRAPE_IMG =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuB9GWQUIpIrs81E8-MKzUPQ43j0v--X7JJiP-WBI3eKE1Z7llgvf3CN2_6icP8YnoWAFPwu0bt6C5hN8u7o4itZvIq8Sjv75uFVy12jiFVCQ5Ybljll1Try_OaD7OmdY6OF-j3-5-CCq4BWiQkivN2nmWPJSnPzGSl6ZzNDQhS0pypF85_w0CpuDbHaZddPSIVpkbyjl4iiLamYBpguVZzwo2od80p7ISwKVhOSypJX-osOQlGpCo4O";
+const EMBLEM_IMG =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuBShTKmrjaiVTMmdyKa1qdMtJlhSddhsnwXj0Sz8ZJeX5c9kPHhPnxWO8ckTdQ_9NflzVLHwfIa8fE4lR92OP10rxelVha1wmGz8Lavp-ITmiZAeBBGTIv3sgz9b9SiBNw8s9Q6PxOahgnkPwLZLSMJ7s-OSMZUy8a6KgdRRJcmB_eK7jTHKt1YB2GTEoMXUVNKYlCBzQwJOiWYyMkLpO7FA0X_RBrvqp7gcDx96dxKpTCllftW8_t3LbNgBS-HQcCDag";
 
 export default function StorySection() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".reveal-on-scroll").forEach((el, i) => {
-              setTimeout(() => el.classList.add("visible"), i * 150);
-            });
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      id="story"
-      className="py-24 bg-vayana-cream"
-      aria-label="Founders note"
-    >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-
-          {/* Left: Editorial Montage */}
-          <div className="lg:col-span-5 reveal-on-scroll">
-            <div className="relative">
-              {/* Weaver Hands Main Card */}
-              <div className="border border-vayana-gold/50 shadow-2xl overflow-hidden bg-vayana-parchment">
-                <Image
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnDcyT2vnU4s7Zmh3lMAggVZXZ1LJNEv5KWHicnn9gl_H8nBcl2r3jqr51Sq6QubC1-Ppg7vO8hU-BnLoQd0RthpMD0OFyPFYDYMoHdTLKPhnMAEPXXN7DuryuVzY4PEkDN4kS0SE0u3UJM5imuCjgw1ASNxFfE0fk7oz80PjA40qgl0OqyrsmugA-8rxiegZkKWA11wB1mxRAq5AjJ-MlFcdescI8ky8SHYjW-kSZ4dtC1CrZ9YaN"
-                  alt="Weaver hands on traditional pit loom"
-                  width={600}
-                  height={450}
-                  className="w-full h-auto object-cover"
-                />
-              </div>
-
-              {/* Brand Emblem Plaque */}
-              <div className="absolute -bottom-8 -right-6 w-40 h-40 bg-vayana-cream border-2 border-vayana-gold p-3 shadow-xl hidden sm:flex flex-col items-center justify-center text-center">
-                <Image
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBShTKmrjaiVTMmdyKa1qdMtJlhSddhsnwXj0Sz8ZJeX5c9kPHhPnxWO8ckTdQ_9NflzVLHwfIa8fE4lR92OP10rxelVha1wmGz8Lavp-ITmiZAeBBGTIv3sgz9b9SiBNw8s9Q6PxOahgnkPwLZLSMJ7s-OSMZUy8a6KgdRRJcmB_eK7jTHKt1YB2GTEoMXUVNKYlCBzQwJOiWYyMkLpO7FA0X_RBrvqp7gcDx96dxKpTCllftW8_t3LbNgBS-HQcCDag"
-                  alt="Vayana Authentic Handloom Emblem"
-                  width={64}
-                  height={64}
-                  className="h-16 w-auto object-contain mb-1"
-                />
-                <span className="text-[8px] uppercase tracking-widest text-vayana-maroon font-bold">
-                  AUTHENTIC HANDLOOM
-                </span>
-              </div>
+    <section id="story" className="relative bg-ivory py-28 md:py-44 overflow-hidden" aria-label="Founders note">
+      <div className="max-w-[1600px] mx-auto px-5 md:px-10 grid grid-cols-1 lg:grid-cols-12 gap-20 lg:gap-10 items-center">
+        {/* Montage */}
+        <div className="lg:col-span-6 relative min-h-[520px] md:min-h-[720px]">
+          <div className="absolute left-0 top-0 w-[62%] aspect-[3/4] overflow-hidden" data-clip="down">
+            <div className="absolute inset-x-0 -inset-y-[12%]" data-parallax="0.12">
+              <Image src={WEAVER_IMG} alt="Weaver's hands on a traditional pit loom" fill sizes="40vw" className="object-cover" />
             </div>
           </div>
-
-          {/* Right: Founders' Letter */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-6 reveal-on-scroll">
-            <span className="text-[11px] uppercase tracking-widest-luxury text-vayana-maroon font-semibold">
-              OUR PHILOSOPHY
-            </span>
-            <h2 className="font-editorial-serif text-3xl sm:text-5xl text-vayana-charcoal uppercase font-normal leading-tight">
-              A Heritage, Rewoven.
-            </h2>
-            <div className="w-12 h-[1px] bg-vayana-gold" aria-hidden="true" />
-            <p className="font-editorial-serif text-lg text-vayana-charcoal/90 italic leading-relaxed">
-              Dear Connoisseur,
-            </p>
-            <p className="text-sm font-sans text-vayana-charcoal/80 leading-relaxed font-light">
-              Vayana was born out of profound reverence for the handloom treasures of Western and Coastal Odisha.
-              Growing up surrounded by the hypnotic clatter of pit looms in Bargarh, Nuapatna, and Sonepur, we
-              witnessed textiles that weren&rsquo;t merely clothing, but sacred tapestries that took months to manifest.
-            </p>
-            <p className="text-sm font-sans text-vayana-charcoal/80 leading-relaxed font-light">
-              As commercial fast fashion accelerated, these centuries-old Bandha equations faced quiet extinction. We
-              established Vayana Textiles to build an uncompromised luxury bridge: returning pride, dignity, and global
-              patronages directly to our master weavers while offering the discerning world silhouettes of timeless,
-              regal sophistication.
-            </p>
-
-            {/* Signature Block */}
-            <div className="pt-6 border-t border-vayana-borderMuted">
-              <p className="font-editorial-serif text-2xl text-vayana-maroon italic">With heartfelt thanks,</p>
-              <span className="font-luxury-display text-sm tracking-widest uppercase text-vayana-charcoal font-bold mt-1 block">
-                TEAM VAYANA
-              </span>
-              <span className="text-[10px] tracking-widest uppercase text-vayana-gold font-medium mt-0.5 block">
-                Bhubaneswar &amp; Sambalpur, Odisha
-              </span>
+          <div className="absolute right-0 bottom-0 w-[50%] aspect-[4/5]" data-float="90">
+            <div className="relative w-full h-full overflow-hidden" data-clip="up" data-delay="0.2">
+              <Image src={DRAPE_IMG} alt="Folded Bomkai silk with temple border" fill sizes="30vw" className="object-cover" />
             </div>
+          </div>
+          <div className="absolute left-[46%] top-[52%] -translate-x-1/2 -translate-y-1/2 z-10" data-float="-60">
+            <RotatingSeal
+              text="AUTHENTIC HANDLOOM · VAYANA ATELIER · "
+              className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-ivory shadow-2xl"
+              ringClass="text-maroon"
+            >
+              <Image src={EMBLEM_IMG} alt="Vayana authentic handloom emblem" width={72} height={72} className="w-16 h-16 md:w-20 md:h-20 object-contain" />
+            </RotatingSeal>
+          </div>
+        </div>
+
+        {/* Letter */}
+        <div className="lg:col-span-5 lg:col-start-8">
+          <SectionLabel index="06">Our Philosophy</SectionLabel>
+          <h2 className="mt-8 font-display text-[12vw] md:text-[6vw] lg:text-[4.8vw] leading-[0.95] tracking-[-0.03em]" data-split="lines">
+            A heritage, <em className="text-maroon">rewoven.</em>
+          </h2>
+
+          <div className="mt-10 space-y-6 text-[15.5px] leading-[1.85] text-ink/70" data-stagger>
+            <p className="font-display italic text-2xl text-ink">Dear connoisseur,</p>
+            <p>
+              Vayana was born of reverence for the handloom treasures of Western and Coastal Odisha. Growing up amid the
+              hypnotic clatter of pit looms in Bargarh, Nuapatna and Sonepur, we witnessed textiles that were not merely
+              clothing, but sacred tapestries that took months to manifest.
+            </p>
+            <p>
+              As fast fashion accelerated, centuries-old Bandha equations faced quiet extinction. Vayana is our
+              uncompromising bridge — returning pride, dignity and global patronage to master weavers, while offering the
+              discerning world silhouettes of timeless, regal sophistication.
+            </p>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-ink/15 flex items-end justify-between gap-6">
+            <div>
+              <p className="font-display italic text-lg text-ink/60">With heartfelt thanks,</p>
+              <p className="mt-2 font-script text-6xl md:text-7xl text-maroon leading-none py-2 pr-6 -my-2" data-clip="left">
+                Team Vayana
+              </p>
+            </div>
+            <p className="eyebrow text-[9px] text-taupe text-right leading-relaxed">
+              Bhubaneswar
+              <br />
+              &amp; Sambalpur
+            </p>
           </div>
         </div>
       </div>

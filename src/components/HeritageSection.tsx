@@ -1,108 +1,97 @@
-"use client";
-
-import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { SectionLabel } from "@/components/ui/Ornaments";
+
+const TEMPLE_IMG =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDC4E8uceW9-3fAzWIds4SCn-1TTzTCZQ-swWs6OSgbxQ8b_eLLVcz5q60YVzZxGMVFRtfFnDXQlHGtYa5UPgk9B6tKns2QSkvPc6VP3s4oxNX85jbDsJmSCZ6aRAkeqbuFs3B3L3CQWRKu_cbbvV65QQmbjJOBmyr9iaiQUE8DCJ2pWOxOAR-g7I0ewdTwgchav5x71tOF3q4Q4j5Vw3Yt3kKYYG9JA7O4wSCH-Jmc1gtqqRlFnDic";
+const LOOM_IMG =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDnDcyT2vnU4s7Zmh3lMAggVZXZ1LJNEv5KWHicnn9gl_H8nBcl2r3jqr51Sq6QubC1-Ppg7vO8hU-BnLoQd0RthpMD0OFyPFYDYMoHdTLKPhnMAEPXXN7DuryuVzY4PEkDN4kS0SE0u3UJM5imuCjgw1ASNxFfE0fk7oz80PjA40qgl0OqyrsmugA-8rxiegZkKWA11wB1mxRAq5AjJ-MlFcdescI8ky8SHYjW-kSZ4dtC1CrZ9YaN";
+
+const STATS = [
+  { value: 7, suffix: "", label: "Generations of master weavers" },
+  { value: 250, suffix: "+", label: "Artisan families patronised" },
+  { value: 45, suffix: "", label: "Days on the loom, per saree" },
+];
 
 export default function HeritageSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".reveal-on-scroll").forEach((el, i) => {
-              setTimeout(() => el.classList.add("visible"), i * 150);
-            });
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      ref={sectionRef}
-      id="roots"
-      className="py-20 md:py-28 bg-vayana-parchment relative"
-      aria-label="Heritage storytelling"
-    >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
-          <span className="text-[11px] uppercase tracking-mega-luxury text-vayana-gold font-semibold">
-            01 / ROOTS &amp; REVERENCE
-          </span>
-          <h2 className="font-editorial-serif text-4xl sm:text-5xl md:text-6xl text-vayana-charcoal font-normal mt-2 leading-tight uppercase">
-            Rooted in Heritage.<br />
-            <span className="italic font-normal text-vayana-maroon">Crafted for Today.</span>
-          </h2>
-          <div className="w-16 h-[1.5px] bg-vayana-gold mx-auto mt-6" aria-hidden="true" />
-        </div>
+    <section id="roots" className="relative bg-ivory py-28 md:py-40 overflow-hidden" aria-label="Heritage storytelling">
+      {/* Oversized outline numeral */}
+      <span
+        className="absolute -top-10 right-[-4vw] font-display text-outline text-[38vw] leading-none text-ink/[0.06] select-none pointer-events-none"
+        data-float="160"
+        aria-hidden="true"
+      >
+        01
+      </span>
 
-        {/* Split Screen Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div className="relative max-w-[1600px] mx-auto px-5 md:px-10">
+        <SectionLabel index="01">Roots &amp; Reverence</SectionLabel>
 
-          {/* Left: Visual Narrative Frame */}
-          <div className="lg:col-span-6 reveal-on-scroll">
-            <div className="relative group">
-              <div className="overflow-hidden border border-vayana-gold/50 shadow-xl bg-vayana-sand">
+        <h2 className="mt-8 font-display text-[12vw] md:text-[7.5vw] leading-[0.92] tracking-[-0.03em] max-w-[14ch]" data-split="lines">
+          Rooted in heritage, <em className="text-maroon">crafted for today.</em>
+        </h2>
+
+        <div className="mt-20 md:mt-28 grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-10">
+          {/* Image montage */}
+          <div className="lg:col-span-6 relative">
+            <div className="relative aspect-[4/5] w-[86%] overflow-hidden" data-clip="up" data-cursor="Konark">
+              <div className="absolute inset-x-0 -inset-y-[12%]" data-parallax="0.1">
                 <Image
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC4E8uceW9-3fAzWIds4SCn-1TTzTCZQ-swWs6OSgbxQ8b_eLLVcz5q60YVzZxGMVFRtfFnDXQlHGtYa5UPgk9B6tKns2QSkvPc6VP3s4oxNX85jbDsJmSCZ6aRAkeqbuFs3B3L3CQWRKu_cbbvV65QQmbjJOBmyr9iaiQUE8DCJ2pWOxOAR-g7I0ewdTwgchav5x71tOF3q4Q4j5Vw3Yt3kKYYG9JA7O4wSCH-Jmc1gtqqRlFnDic"
-                  alt="Cinematic luxury fashion campaign of Indian woman in Kalinga temple courtyard"
-                  width={600}
-                  height={750}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                  src={TEMPLE_IMG}
+                  alt="Woman in handwoven silk within a Kalinga temple courtyard"
+                  fill
+                  sizes="(max-width: 1024px) 86vw, 45vw"
+                  className="object-cover"
                 />
               </div>
-              {/* Caption Card Plaque */}
-              <div className="mt-4 p-5 bg-vayana-cream border-l-2 border-vayana-maroon shadow-sm">
-                <p className="text-xs font-serif uppercase tracking-widest text-vayana-maroon font-semibold">
-                  THE SANCTUARY OF KONARK &amp; NUAPATNA
-                </p>
-                <p className="text-xs text-vayana-charcoal/70 font-sans mt-1 leading-relaxed">
-                  Echoing the carved sandstone spires of 13th-century Kalinga temples, our master weavers channel
-                  geometry, rhythm, and devotion into the loom.
-                </p>
+            </div>
+
+            <div
+              className="absolute right-0 bottom-[-8%] w-[44%] aspect-square overflow-hidden border-[10px] border-ivory shadow-2xl"
+              data-float="70"
+            >
+              <div className="relative w-full h-full" data-clip="left" data-delay="0.3">
+                <Image src={LOOM_IMG} alt="Weaver's hands at a wooden pit loom" fill sizes="25vw" className="object-cover" />
               </div>
+            </div>
+
+            <div className="absolute left-[-1.25rem] top-10 hidden md:flex flex-col items-center gap-3" aria-hidden="true">
+              <span className="eyebrow text-[9px] text-taupe [writing-mode:vertical-rl] rotate-180">Konark · Nuapatna</span>
+              <span className="w-px h-20 bg-gold" />
             </div>
           </div>
 
-          {/* Right: Poetic Narrative */}
-          <div className="lg:col-span-6 flex flex-col justify-center space-y-6 reveal-on-scroll">
-            <h3 className="font-editorial-serif text-2xl sm:text-3xl text-vayana-charcoal leading-snug">
-              &ldquo;We do not manufacture textiles; we preserve living poetry passed down through seven generations of
+          {/* Narrative */}
+          <div className="lg:col-span-5 lg:col-start-8 flex flex-col justify-center">
+            <p className="font-display text-3xl md:text-[2.6rem] leading-[1.18] text-ink" data-scrub>
+              &ldquo;We do not manufacture textiles; we preserve living poetry, passed down through seven generations of
               master weavers.&rdquo;
-            </h3>
-            <p className="text-sm font-sans text-vayana-charcoal/80 leading-relaxed font-light">
-              In the ancient river valleys of Odisha, textile making is not merely a profession—it is a spiritual
-              communion. The legendary <em>Bandhakala</em> (Ikat) process requires mathematical brilliance: threads are
-              dyed prior to weaving with millimeter accuracy so that when the wooden shuttle passes through the warp,
-              complex sacred geometries emerge effortlessly.
-            </p>
-            <p className="text-sm font-sans text-vayana-charcoal/80 leading-relaxed font-light">
-              Vayana honors this legacy by ensuring 100% direct artisan compensation, sustainable wild mulberry and
-              tussar sericulture, and zero chemical run-off into our sacred waterways.
             </p>
 
-            {/* Stats Matrix */}
-            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-vayana-gold/30">
-              {[
-                { value: "GI-Tag", label: "Odisha Authenticity" },
-                { value: "250+", label: "Artisan Guilds" },
-                { value: "45 Days", label: "Loom Precision Per Saree" },
-              ].map(({ value, label }) => (
-                <div key={label}>
-                  <span className="block font-editorial-serif text-2xl text-vayana-maroon">{value}</span>
-                  <span className="text-[10px] uppercase tracking-wider text-vayana-charcoal/70">{label}</span>
+            <div className="mt-12 grid sm:grid-cols-2 gap-8 text-[15px] leading-[1.8] text-ink/70" data-stagger>
+              <p>
+                In the river valleys of Odisha, weaving is a spiritual communion. The legendary <em>Bandhakala</em> Ikat
+                demands mathematical brilliance — threads are dyed before weaving with millimetre accuracy so that sacred
+                geometries emerge as the shuttle flies.
+              </p>
+              <p>
+                Vayana honours this legacy with 100% direct artisan compensation, wild mulberry and tussar sericulture, and
+                zero chemical run-off into the sacred waterways that feed the looms.
+              </p>
+            </div>
+
+            <dl className="mt-14 pt-10 border-t border-ink/15 grid grid-cols-3 gap-6">
+              {STATS.map(({ value, suffix, label }) => (
+                <div key={label} data-reveal="up">
+                  <dt className="sr-only">{label}</dt>
+                  <dd className="font-display text-5xl md:text-6xl text-maroon leading-none">
+                    <span data-counter={value}>{value}</span>
+                    <span className="text-gold">{suffix}</span>
+                  </dd>
+                  <p className="mt-3 eyebrow text-[9px] leading-relaxed tracking-[0.2em] text-taupe">{label}</p>
                 </div>
               ))}
-            </div>
+            </dl>
           </div>
         </div>
       </div>
