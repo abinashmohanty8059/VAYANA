@@ -74,27 +74,32 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-20 pt-8 border-t border-ivory/10 flex flex-col md:flex-row items-center justify-between gap-5 eyebrow text-[9px] text-sand/45">
-          <p>© {new Date().getFullYear()} Vayana Textiles · Handwoven in Odisha, India</p>
-          <div className="flex gap-6">
-            <a href="#" className="link-slide hover:text-gold transition-colors">Privacy</a>
-            <a href="#" className="link-slide hover:text-gold transition-colors">Terms of Heirloom Service</a>
-            <a href="#" className="link-slide hover:text-gold transition-colors">GI Authenticity</a>
+        <div className="mt-20 pt-8 border-t border-ivory/10 grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-6 eyebrow text-[9px] text-sand/45">
+          <p className="text-center lg:text-left">© {new Date().getFullYear()} Vayana Textiles · Handwoven in Odisha, India</p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
+            <a href="#" className="link-slide whitespace-nowrap hover:text-gold transition-colors">Privacy</a>
+            <a href="#" className="link-slide whitespace-nowrap hover:text-gold transition-colors">Terms of Heirloom Service</a>
+            <a href="#" className="link-slide whitespace-nowrap hover:text-gold transition-colors">GI Authenticity</a>
           </div>
-          <a href="#" className="group flex items-center gap-3 text-ivory/70 hover:text-gold transition-colors" data-magnetic="0.3">
+          <a
+            href="#"
+            className="group justify-self-center lg:justify-self-end flex items-center gap-3 whitespace-nowrap text-ivory/70 hover:text-gold transition-colors"
+            data-magnetic="0.3"
+          >
             <RollText>Back to top</RollText>
-            <span className="w-9 h-9 rounded-full border border-current flex items-center justify-center transition-transform duration-700 ease-luxe group-hover:-translate-y-1">
+            <span className="w-9 h-9 shrink-0 rounded-full border border-current flex items-center justify-center transition-transform duration-700 ease-luxe group-hover:-translate-y-1">
               ↑
             </span>
           </a>
         </div>
       </div>
 
-      {/* Giant wordmark */}
-      <div className="relative mt-10 select-none pointer-events-none" aria-hidden="true">
+      {/* Giant wordmark — sized in vw so it spans the content width at every breakpoint */}
+      <div className="relative mt-12 md:mt-16 px-5 md:px-10 pb-10 lg:pb-[3vw] select-none pointer-events-none" aria-hidden="true">
         <p
-          className="font-display text-center text-[27vw] leading-[0.78] tracking-[-0.04em] text-gold-foil translate-y-[12%]"
+          className="font-display text-center text-[23.5vw] leading-[0.9] tracking-[-0.04em] text-gold-foil whitespace-nowrap"
           data-clip="up"
+          data-start="top 100%"
         >
           VAYANA
         </p>

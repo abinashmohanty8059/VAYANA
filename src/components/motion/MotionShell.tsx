@@ -45,7 +45,7 @@ const CLIP_FROM: Record<string, string> = {
  *   data-stagger                 → children cascade in
  *   data-split="lines|words|chars" → masked SplitText reveal
  *   data-scrub                   → words brighten as you scroll through
- *   data-clip="up|left|center…"  → clip-path wipe, inner <img> de-zooms
+ *   data-clip="up|left|center…"  → clip-path wipe, inner <img> de-zooms (data-start overrides trigger)
  *   data-parallax="0.1"          → yPercent drift relative to its frame
  *   data-float="120"             → px drift over the viewport pass
  *   data-spin="180"              → rotation scrubbed with scroll
@@ -130,7 +130,7 @@ export default function MotionShell({
 
         q("[data-clip]").forEach((el) => {
           const img = el.querySelector("img");
-          const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 88%", once: true } });
+          const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: el.dataset.start || "top 88%", once: true } });
           tl.fromTo(
             el,
             { clipPath: CLIP_FROM[el.dataset.clip || "up"] },
