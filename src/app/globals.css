@@ -80,9 +80,12 @@ html.has-cursor textarea {
   cursor: text;
 }
 
-/* Bodoni needs a touch of optical tightening at large sizes */
+/* Bodoni's automatic optical sizing switches to its display cut at large sizes,
+   where hairlines thin to near-invisible. Pinning a lower optical size keeps the
+   same letterforms with sturdier hairlines. */
 .font-display {
-  font-optical-sizing: auto;
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" 18;
   font-feature-settings: "liga", "dlig";
 }
 
