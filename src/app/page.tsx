@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import HeritageSection from "@/components/HeritageSection";
 import CollectionSection from "@/components/CollectionSection";
 import WeavingSection from "@/components/WeavingSection";
+import SareeSection from "@/components/SareeSection";
 import MotifsSection from "@/components/MotifsSection";
 import WhyVayana from "@/components/WhyVayana";
 import EditorialBanner from "@/components/EditorialBanner";
@@ -23,6 +24,7 @@ export default function Home() {
         <WeaveMarquee />
         <CollectionSection />
         <WeavingSection />
+        <SareeSection />
         <MotifsSection />
         <WhyVayana />
         <EditorialBanner />
