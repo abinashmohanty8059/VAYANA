@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { ScrollTrigger } from "@/lib/gsap";
-import { paintSaree } from "./sareeTexture";
+import { paintSaree, SAREE_DESIGNS, type SareeDesign } from "./sareeTexture";
 
 // Cloth dimensions (world units) and simulation grid.
 const BW = 6.4;
@@ -22,9 +22,17 @@ const ITERATIONS = 5;
  * The held edge sways on its own; the pointer stirs the silk it passes over.
  */
 /** `className` must give the host a size and position (e.g. "absolute inset-0"). */
-export default function SareeCloth({ className = "relative w-full h-full" }: { className?: string }) {
+export default function SareeCloth({
+  className = "relative w-full h-full",
+  design = SAREE_DESIGNS[0],
+}: {
+  className?: string;
+  design?: SareeDesign;
+}) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const designRef = useRef(design);
+  const setDesignRef = useRef<((d: SareeDesign) => void) | null>(null);
 
   useEffect(() => {
     const host = hostRef.current!;
@@ -53,7 +61,7 @@ export default function SareeCloth({ className = "relative w-full h-full" }: { c
 
       // ── Material ────────────────────────────────────────
       const font = getComputedStyle(document.documentElement).getPropertyValue("--font-bodoni").trim() || "Georgia, serif";
-      const { albedo, orm } = paintSaree(font);
+      const { albedo, orm } = paintSaree(font, designRef.current);
       const maxAniso = renderer.capabilities.getMaxAnisotropy();
       const map = new THREE.CanvasTexture(albedo);
       map.colorSpace = THREE.SRGBColorSpace;
@@ -67,7 +75,7 @@ export default function SareeCloth({ className = "relative w-full h-full" }: { c
         roughness: 1,
         metalness: 1,
         sheen: 0.35,
-        sheenColor: new THREE.Color("#c9a25a"),
+        sheenColor: new THREE.Color(designRef.current.sheen),
         sheenRoughness: 0.5,
         envMapIntensity: 0.55,
         side: THREE.DoubleSide,
@@ -125,6 +133,28 @@ export default function SareeCloth({ className = "relative w-full h-full" }: { c
       const ndc = new THREE.Vector2();
 
       // Scroll through the section gently orbits the camera.
+      // A change of saree arrives on a gust: the silk whips while the canvas crossfades.
+      let gustBoost = 0;
+      let swapTimer = 0;
+      setDesignRef.current = (next) => {
+        gustBoost = 1;
+        start();
+        window.clearTimeout(swapTimer);
+        const fade = reduce ? 0 : 380;
+        canvas.style.transition = `opacity ${fade}ms ease`;
+        canvas.style.opacity = "0";
+        swapTimer = window.setTimeout(() => {
+          const painted = paintSaree(font, next);
+          map.image = painted.albedo;
+          ormMap.image = painted.orm;
+          map.needsUpdate = true;
+          ormMap.needsUpdate = true;
+          material.sheenColor.set(next.sheen);
+          if (!running) render();
+          canvas.style.opacity = "1";
+        }, fade);
+      };
+
       let scrollProgress = 0.5;
       const st = ScrollTrigger.create({
         trigger: host,
@@ -142,7 +172,7 @@ export default function SareeCloth({ className = "relative w-full h-full" }: { c
       };
 
       const step = (t: number) => {
-        const gust = 0.62 + 0.3 * Math.sin(t * 0.55) + 0.14 * Math.sin(t * 1.7 + 1.1);
+        const gust = 0.62 + 0.3 * Math.sin(t * 0.55) + 0.14 * Math.sin(t * 1.7 + 1.1) + gustBoost * 1.4;
         for (let iy = 0; iy <= GY; iy++) {
           const cy = iy / GY;
           for (let ix = 1; ix <= GX; ix++) {
@@ -207,6 +237,7 @@ export default function SareeCloth({ className = "relative w-full h-full" }: { c
           prev[o + 2] = cur[o + 2];
         }
         pointer.strength *= 0.92;
+        gustBoost *= 0.975;
       };
 
       const commit = () => {
@@ -228,7 +259,8 @@ export default function SareeCloth({ className = "relative w-full h-full" }: { c
         const dist = visibleW / 2 / Math.tan((camera.fov * Math.PI) / 360) / camera.aspect;
         camera.position.set(0, 0.35, dist);
         camera.updateProjectionMatrix();
-        group.position.set(portrait ? -1.1 : 0.15, portrait ? 0 : -0.1, 0);
+        // Sit the silk between the heading and the caption.
+        group.position.set(portrait ? -1.1 : 0.15, portrait ? 1.05 : 0.18, 0);
       };
 
       const render = () => {
@@ -324,6 +356,8 @@ export default function SareeCloth({ className = "relative w-full h-full" }: { c
       canvas.addEventListener("webglcontextrestored", onRestored);
 
       cleanup = () => {
+        window.clearTimeout(swapTimer);
+        setDesignRef.current = null;
         stop();
         io.disconnect();
         ro.disconnect();
@@ -350,6 +384,12 @@ export default function SareeCloth({ className = "relative w-full h-full" }: { c
       cleanup();
     };
   }, []);
+
+  useEffect(() => {
+    if (designRef.current === design) return;
+    designRef.current = design;
+    setDesignRef.current?.(design);
+  }, [design]);
 
   return (
     <div ref={hostRef} className={className}>
