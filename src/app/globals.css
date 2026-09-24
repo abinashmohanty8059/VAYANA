@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-vayana-cream: #faf7f2;
+  --color-vayana-parchment: #f5efeb;
+  --color-vayana-sand: #eadbce;
+  --color-vayana-borderMuted: #e5dcc0;
+  --color-vayana-charcoal: #141312;
+  --color-vayana-deepDark: #0d0c0b;
+  --color-vayana-maroon: #7a1b1c;
+  --color-vayana-crimson: #8c2224;
+  --color-vayana-wine: #5c1415;
+  --color-vayana-gold: #c5a059;
+  --color-vayana-lightGold: #e4c788;
+  --color-vayana-antiqueGold: #b89047;
+
+  /* Font families */
+  --font-family-serif: var(--font-cormorant), Georgia, serif;
+  --font-family-display: var(--font-cinzel), "Trajan Pro", serif;
+  --font-family-sans: var(--font-montserrat), "Helvetica Neue", sans-serif;
+
+  /* Letter spacings */
+  --letter-spacing-widestLuxury: 0.28em;
+  --letter-spacing-megaLuxury: 0.35em;
+  --letter-spacing-heritage: 0.22em;
+}
+
+/* ─── Ikat Border Strip ─────────────────────────────── */
+.ikat-border-strip {
+  height: 18px;
+  width: 100%;
+  background-color: #7a1b1c;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      #141312 0px,
+      #141312 8px,
+      #c5a059 8px,
+      #c5a059 10px,
+      #7a1b1c 10px,
+      #7a1b1c 18px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      #8c2224 0px,
+      #8c2224 8px,
+      #f5efeb 8px,
+      #f5efeb 9px,
+      #7a1b1c 9px,
+      #7a1b1c 18px
+    );
+  background-blend-mode: overlay;
+  border-top: 1px solid #c5a059;
+  border-bottom: 1px solid #c5a059;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.ikat-border-strip-subtle {
+  height: 8px;
+  width: 100%;
+  background: linear-gradient(90deg, #7a1b1c 0%, #c5a059 25%, #141312 50%, #c5a059 75%, #7a1b1c 100%);
+  opacity: 0.85;
+}
+
+/* ─── Gold Foil Text ────────────────────────────────── */
+.gold-foil-text {
+  background: linear-gradient(135deg, #dfba73 0%, #c5a059 40%, #e8d3a2 65%, #9e7932 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Gold Corner Frame ─────────────────────────────── */
+.gold-corner-frame {
+  position: relative;
+}
+.gold-corner-frame::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 24px;
+  height: 24px;
+  border-top: 2px solid #c5a059;
+  border-left: 2px solid #c5a059;
+  pointer-events: none;
+  z-index: 10;
+}
+.gold-corner-frame::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-bottom: 2px solid #c5a059;
+  border-right: 2px solid #c5a059;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ─── Luxury Nav ────────────────────────────────────── */
+.luxury-blur-nav {
+  transition:
+    background-color 0.4s ease,
+    backdrop-filter 0.4s ease,
+    box-shadow 0.4s ease;
+}
+.luxury-blur-nav.scrolled {
+  background-color: rgba(250, 247, 242, 0.94);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 25px -4px rgba(20, 19, 18, 0.08);
+  border-bottom: 1px solid rgba(197, 160, 89, 0.25);
+}
+
+/* ─── Font Utility Classes ──────────────────────────── */
+.font-luxury-display {
+  font-family: var(--font-cinzel), "Trajan Pro", serif;
+  letter-spacing: 0.12em;
+}
+.font-editorial-serif {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+.tracking-heritage {
+  letter-spacing: 0.22em;
+}
+.tracking-widest-luxury {
+  letter-spacing: 0.28em;
+}
+.tracking-mega-luxury {
+  letter-spacing: 0.35em;
+}
+
+/* ─── Hero Dot Pattern ──────────────────────────────── */
+.hero-dot-pattern {
+  background-image: radial-gradient(#c5a059 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* ─── Product Card hover ────────────────────────────── */
+.product-card .hover-drawer {
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+.product-card:hover .hover-drawer {
+  transform: translateY(0);
+}
+
+/* ─── Scroll reveal ─────────────────────────────────── */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.75s ease,
+    transform 0.75s ease;
+}
+.reveal-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Reduced Motion ────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
