@@ -64,7 +64,7 @@ export default function SareeSection() {
       <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-ink to-transparent pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink via-ink/70 to-transparent pointer-events-none" aria-hidden="true" />
 
-      <div className="relative z-10 h-full max-w-[1600px] mx-auto px-5 md:px-10 py-24 md:py-28 flex flex-col justify-between pointer-events-none">
+      <div className="relative z-10 h-full max-w-[1600px] mx-auto px-5 md:px-10 pt-24 md:pt-28 pb-8 md:pb-10 flex flex-col justify-between pointer-events-none">
         {/* Heading + counter */}
         <div className="flex items-start justify-between gap-6">
           <div className="max-w-xl">
@@ -82,67 +82,46 @@ export default function SareeSection() {
           </p>
         </div>
 
-        {/* Caption + controls */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <div className="saree-caption max-w-md" aria-live="polite">
-            <p className="eyebrow text-gold">
-              {design.weave} · {design.origin}
-            </p>
-            <h3 className="mt-3 font-display text-4xl md:text-5xl leading-none">{design.name}</h3>
-            <p className="mt-4 text-[15px] leading-[1.75] text-sand/70">{design.note}</p>
-          </div>
-
-          <div className="flex flex-col items-start md:items-end gap-6 pointer-events-auto">
-            <div className="flex items-center gap-3 md:gap-4 p-1.5 rounded-full bg-ink/55 backdrop-blur-md ring-1 ring-ivory/10">
-              <button
-                type="button"
-                onClick={() => go(-1)}
-                aria-label="Previous saree"
-                className="w-14 h-14 rounded-full border border-ivory/30 flex items-center justify-center hover:bg-ivory hover:text-ink hover:border-ivory transition-colors duration-500"
-                data-magnetic="0.4"
-              >
-                <Arrow className="w-5 h-5 rotate-180" />
-              </button>
-              <div className="flex items-center gap-2" role="tablist" aria-label="Choose a saree">
-                {SAREE_DESIGNS.map((d, i) => (
-                  <button
-                    key={d.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={i === index}
-                    aria-label={d.name}
-                    onClick={() => {
-                      dir.current = i >= index ? 1 : -1;
-                      setIndex(i);
-                    }}
-                    className="group p-1.5"
-                  >
-                    <span
-                      className={`block h-2.5 rounded-full ring-1 ring-ivory/30 transition-all duration-700 ease-luxe ${
-                        i === index ? "w-8" : "w-2.5 group-hover:ring-gold"
-                      }`}
-                      style={{ backgroundColor: d.body[0] }}
-                    />
-                  </button>
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={() => go(1)}
-                aria-label="Next saree"
-                className="w-14 h-14 rounded-full bg-gold text-ink flex items-center justify-center hover:bg-ivory transition-colors duration-500"
-                data-magnetic="0.4"
-              >
-                <Arrow className="w-5 h-5" />
-              </button>
+        {/* Caption, then arrows along the bottom edge */}
+        <div className="flex flex-col gap-8 md:gap-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="saree-caption max-w-md" aria-live="polite">
+              <p className="eyebrow text-gold">
+                {design.weave} · {design.origin}
+              </p>
+              <h3 className="mt-3 font-display text-4xl md:text-5xl leading-none">{design.name}</h3>
+              <p className="mt-4 text-[15px] leading-[1.75] text-sand/70">{design.note}</p>
             </div>
+
             <a
               href="#collection"
-              className="btn-lux border border-ivory/40 text-ivory hover:text-ink [--btn-fill:var(--color-gold)]"
+              className="pointer-events-auto self-start md:self-auto btn-lux border border-ivory/40 text-ivory hover:text-ink [--btn-fill:var(--color-gold)]"
               data-magnetic="0.25"
             >
               Find your drape <Arrow className="btn-arrow w-4 h-4" />
             </a>
+          </div>
+
+          {/* Prev / next */}
+          <div className="flex self-center gap-4 pointer-events-auto">
+            <button
+              type="button"
+              onClick={() => go(-1)}
+              aria-label="Previous saree"
+              className="w-14 h-14 rounded-full border border-ivory/30 flex items-center justify-center hover:bg-ivory hover:text-ink hover:border-ivory transition-colors duration-500"
+              data-magnetic="0.4"
+            >
+              <Arrow className="w-5 h-5 rotate-180" />
+            </button>
+            <button
+              type="button"
+              onClick={() => go(1)}
+              aria-label="Next saree"
+              className="w-14 h-14 rounded-full bg-gold text-ink flex items-center justify-center hover:bg-ivory transition-colors duration-500"
+              data-magnetic="0.4"
+            >
+              <Arrow className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </div>
