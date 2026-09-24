@@ -67,11 +67,11 @@ export default function MotionShell({
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-      mm.add({ motion: "(prefers-reduced-motion: no-preference)", lite: LITE_QUERY }, (ctx) => {
-        if (!ctx.conditions!.motion) return;
-        // Scroll-scrubbed transforms (parallax, drift, spin, skew) are desktop-only.
-        const lite = ctx.conditions!.lite;
-        const q = <T extends Element = HTMLElement>(sel: string) => gsap.utils.toArray<T>(sel, ref.current);
+      const q = <T extends Element = HTMLElement>(sel: string) => gsap.utils.toArray<T>(sel, ref.current);
+
+      // One-time entrances. Keyed only on reduced motion, so crossing a width
+      // breakpoint (rotation, resizing) never re-hides content already revealed.
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
 
         q("[data-reveal]").forEach((el) => {
           gsap.from(el, {
@@ -143,7 +143,13 @@ export default function MotionShell({
           if (img) tl.from(img, { scale: 1.4, duration: 2.4, ease: "expo.out", clearProps: "transform" }, "<0.1");
         });
 
-        if (!lite) q("[data-parallax]").forEach((el) => {
+      });
+
+      // Scroll-scrubbed transforms (parallax, drift, spin, skew): desktop only.
+      mm.add({ motion: "(prefers-reduced-motion: no-preference)", lite: LITE_QUERY }, (ctx) => {
+        if (!ctx.conditions!.motion || ctx.conditions!.lite) return;
+
+        q("[data-parallax]").forEach((el) => {
           const s = parseFloat(el.dataset.parallax || "0.1");
           gsap.fromTo(
             el,
@@ -156,7 +162,7 @@ export default function MotionShell({
           );
         });
 
-        if (!lite) q("[data-float]").forEach((el) => {
+        q("[data-float]").forEach((el) => {
           const d = parseFloat(el.dataset.float || "100");
           gsap.fromTo(
             el,
@@ -165,7 +171,7 @@ export default function MotionShell({
           );
         });
 
-        if (!lite) q("[data-spin]").forEach((el) => {
+        q("[data-spin]").forEach((el) => {
           gsap.to(el, {
             rotation: parseFloat(el.dataset.spin || "180"),
             ease: "none",
@@ -204,7 +210,7 @@ export default function MotionShell({
           });
         });
 
-        const skewTargets = lite ? [] : q("[data-skew]");
+        const skewTargets = q("[data-skew]");
         if (skewTargets.length) {
           const proxy = { skew: 0 };
           const set = gsap.quickSetter(skewTargets, "skewY", "deg");
@@ -249,7 +255,21 @@ export default function MotionShell({
     const refresh = () => ScrollTrigger.refresh();
     window.addEventListener(LOADED_EVENT, refresh);
     window.addEventListener("load", refresh);
+
+    // When a breakpoint flips, sections rebuild pins and spacers in their own
+    // matchMedia handlers; re-measure every trigger once they have all run so the
+    // page length and trigger positions match the new layout.
+    const breakpoints = [LITE_QUERY, "(min-width: 1024px)", "(pointer: fine)"].map((q) => window.matchMedia(q));
+    let raf = 0;
+    const onBreakpoint = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => requestAnimationFrame(refresh));
+    };
+    breakpoints.forEach((m) => m.addEventListener("change", onBreakpoint));
+
     return () => {
+      cancelAnimationFrame(raf);
+      breakpoints.forEach((m) => m.removeEventListener("change", onBreakpoint));
       document.removeEventListener("click", onClick);
       window.removeEventListener(LOADED_EVENT, refresh);
       window.removeEventListener("load", refresh);

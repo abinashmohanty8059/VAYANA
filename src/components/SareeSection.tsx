@@ -43,7 +43,7 @@ export default function SareeSection() {
     <section
       ref={root}
       id="drape"
-      className="relative h-[100svh] min-h-[680px] bg-ink text-ivory overflow-hidden"
+      className="relative flex flex-col md:block md:h-[100svh] md:min-h-[680px] bg-ink text-ivory overflow-hidden"
       aria-label="Saree gallery"
       aria-roledescription="carousel"
       onKeyDown={onKey}
@@ -56,7 +56,8 @@ export default function SareeSection() {
       />
       <div className="ikat-weave absolute inset-0 text-gold/[0.03] pointer-events-none" aria-hidden="true" />
 
-      <div className="absolute inset-0" data-cursor="Stir">
+      {/* Phones: the silk gets its own stage between heading and caption. md+: full-bleed behind the text. */}
+      <div className="order-2 relative h-[36svh] min-h-[220px] md:absolute md:inset-0 md:h-auto md:min-h-0" data-cursor="Stir">
         <SareeCloth className="absolute inset-0" design={design} />
       </div>
 
@@ -64,9 +65,10 @@ export default function SareeSection() {
       <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-ink to-transparent pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-ink via-ink/70 to-transparent pointer-events-none" aria-hidden="true" />
 
-      <div className="relative z-10 h-full max-w-[1600px] mx-auto px-5 md:px-10 pt-24 md:pt-28 pb-8 md:pb-10 flex flex-col justify-between pointer-events-none">
+      {/* On phones this wrapper dissolves (display: contents) so its two blocks stack around the stage. */}
+      <div className="contents md:relative md:z-10 md:h-full md:max-w-[1600px] md:mx-auto md:px-10 md:pt-28 md:pb-10 md:flex md:flex-col md:justify-between pointer-events-none">
         {/* Heading + counter */}
-        <div className="flex items-start justify-between gap-6">
+        <div className="order-1 relative z-10 px-5 pt-24 md:p-0 flex items-start justify-between gap-6">
           <div className="max-w-xl">
             <div className="flex items-center gap-4 eyebrow text-gold" data-reveal="left">
               <span className="h-px w-10 bg-current opacity-60" />
@@ -83,7 +85,7 @@ export default function SareeSection() {
         </div>
 
         {/* Caption, then arrows along the bottom edge */}
-        <div className="flex flex-col gap-8 md:gap-10">
+        <div className="order-3 relative z-10 px-5 pb-10 md:p-0 flex flex-col gap-8 md:gap-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="saree-caption max-w-md" aria-live="polite">
               <p className="eyebrow text-gold">

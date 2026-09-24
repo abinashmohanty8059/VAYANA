@@ -56,14 +56,14 @@ export default function StorySection() {
             </p>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-ink/15 flex items-end justify-between gap-6">
+          <div className="mt-12 pt-8 border-t border-ink/15 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-6">
             <div>
               <p className="font-display italic text-lg text-ink/60">With heartfelt thanks,</p>
               <p className="mt-2 font-script text-6xl md:text-7xl text-maroon leading-none py-2 pr-6 -my-2" data-clip="left">
                 Team Vayana
               </p>
             </div>
-            <p className="eyebrow text-[9px] text-taupe text-right leading-relaxed">
+            <p className="eyebrow text-[9px] text-taupe sm:text-right leading-relaxed">
               Bhubaneswar
               <br />
               &amp; Sambalpur

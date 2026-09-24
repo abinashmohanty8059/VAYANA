@@ -257,13 +257,15 @@ export default function SareeCloth({
         renderer.setSize(w, h, false);
         camera.aspect = w / h;
         portrait = camera.aspect < 1;
-        // Landscape: the whole saree in frame. Portrait: let it run off the edges, larger.
-        const visibleW = portrait ? BW * 0.7 : BW * 1.3;
+        // Wide (desktop): whole saree with room to fly around the text. Near-square
+        // (the phone stage): fill the stage. Portrait (tablets): both ends in view.
+        const stage = !portrait && camera.aspect < 1.5;
+        const visibleW = portrait ? BW * 1.15 : stage ? BW * 1.06 : BW * 1.3;
         const dist = visibleW / 2 / Math.tan((camera.fov * Math.PI) / 360) / camera.aspect;
         camera.position.set(0, 0.35, dist);
         camera.updateProjectionMatrix();
         // Sit the silk between the heading and the caption.
-        group.position.set(portrait ? -1.1 : 0.15, portrait ? 1.05 : 0.18, 0);
+        group.position.set(portrait ? 0.05 : stage ? 0.3 : 0.15, portrait ? 0.35 : stage ? 0 : 0.18, 0);
       };
 
       const render = () => {

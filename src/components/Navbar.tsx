@@ -92,11 +92,11 @@ export default function Navbar() {
         />
         <div className={`relative max-w-[1600px] mx-auto px-5 md:px-10 h-20 flex items-center justify-between transition-colors duration-700 ${open ? "text-ivory" : tone}`}>
           {/* Wordmark */}
-          <a href="#" className="group flex items-center gap-3" aria-label="Vayana Textiles home" data-magnetic="0.2">
+          <a href="#" className="group flex items-center gap-2 min-[360px]:gap-3" aria-label="Vayana Textiles home" data-magnetic="0.2">
             <LotusMark className="w-8 h-8 sm:w-9 sm:h-9 text-gold transition-transform duration-1000 ease-luxe group-hover:rotate-[360deg]" />
             <span className="flex flex-col leading-none">
-              <span className="font-display text-2xl tracking-[0.18em]">VAYANA</span>
-              <span className="eyebrow text-[8px] tracking-[0.3em] sm:tracking-[0.5em] text-gold mt-1">Textiles · Odisha</span>
+              <span className="font-display text-xl min-[360px]:text-2xl tracking-[0.18em]">VAYANA</span>
+              <span className="eyebrow text-[8px] whitespace-nowrap tracking-[0.2em] min-[400px]:tracking-[0.3em] sm:tracking-[0.5em] text-gold mt-1">Textiles · Odisha</span>
             </span>
           </a>
 
@@ -140,7 +140,7 @@ export default function Navbar() {
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((o) => !o)}
-              className="group ml-1 flex items-center gap-3 pl-4 pr-1.5 py-1.5 rounded-full border border-current/25 hover:border-gold transition-colors"
+              className="group ml-1 flex items-center gap-3 pl-1.5 sm:pl-4 pr-1.5 py-1.5 rounded-full border border-current/25 hover:border-gold transition-colors"
               data-magnetic="0.3"
             >
               <span className="eyebrow text-[10px] hidden sm:block">{open ? "Close" : "Menu"}</span>
